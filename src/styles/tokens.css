@@ -1,0 +1,55 @@
+:root {
+  /* ---- Color: deep-indigo arcade ---- */
+  --bg: #14122b;
+  --bg-grad: radial-gradient(1200px 600px at 80% -10%, #241f4d 0%, #14122b 55%);
+  --surface: #1f1b3d;
+  --surface-2: #2a2552;
+  --surface-3: #352e63;
+  --line: #38336b;
+
+  --ink: #f3f0ff;
+  --muted: #a39fcc;
+  --muted-2: #7c78a8;
+
+  --magenta: #ff3d81;
+  --magenta-ink: #ffd9e7;
+  --cyan: #21e6c1;
+  --cyan-ink: #c6fff4;
+  --gold: #ffc53d;
+  --silver: #cdd5e6;
+  --bronze: #e08a52;
+
+  --danger: #ff5470;
+
+  /* glows */
+  --glow-magenta: 0 0 0 1px rgba(255, 61, 129, 0.4), 0 8px 30px rgba(255, 61, 129, 0.28);
+  --glow-cyan: 0 0 0 1px rgba(33, 230, 193, 0.35), 0 8px 30px rgba(33, 230, 193, 0.2);
+
+  /* ---- Type ---- */
+  --font-display: "Fredoka", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+
+  --step--1: clamp(0.78rem, 0.74rem + 0.2vw, 0.85rem);
+  --step-0: clamp(0.95rem, 0.9rem + 0.25vw, 1.05rem);
+  --step-1: clamp(1.18rem, 1.05rem + 0.6vw, 1.45rem);
+  --step-2: clamp(1.55rem, 1.3rem + 1.2vw, 2.1rem);
+  --step-3: clamp(2.1rem, 1.6rem + 2.4vw, 3.2rem);
+  --step-4: clamp(2.8rem, 2rem + 4vw, 4.8rem);
+
+  /* ---- Space / radius ---- */
+  --sp-1: 0.35rem;
+  --sp-2: 0.6rem;
+  --sp-3: 1rem;
+  --sp-4: 1.5rem;
+  --sp-5: 2.25rem;
+  --sp-6: 3.5rem;
+
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-pill: 999px;
+
+  --shadow-card: 0 10px 30px rgba(8, 6, 24, 0.45);
+  --maxw: 1120px;
+}

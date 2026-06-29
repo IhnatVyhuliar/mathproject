@@ -1,0 +1,771 @@
+/* ============================================================
+   Arcade Scoreboard — component & page styles
+   Teacher pages stay calm; the Ranking scoreboard turns it up.
+   ============================================================ */
+
+.muted-line {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.dot {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  flex: none;
+}
+.dot-lg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+/* ---------- HOME ---------- */
+.home-hero {
+  padding-block: var(--sp-5) var(--sp-4);
+}
+.home-title {
+  font-size: var(--step-4);
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+.title-pop {
+  background: linear-gradient(100deg, var(--magenta), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.home-sub {
+  color: var(--muted);
+  margin-top: 0.4rem;
+  font-size: var(--step-1);
+}
+.add-class {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+  max-width: 560px;
+}
+.add-class .input {
+  flex: 1;
+}
+
+.class-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+.class-card {
+  --accent: var(--magenta);
+  position: relative;
+  padding: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-height: 178px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.class-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--accent);
+  opacity: 0.85;
+}
+.class-card:hover,
+.class-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 16px 40px rgba(8, 6, 24, 0.55), 0 0 0 1px var(--accent);
+}
+.class-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.class-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--r-md);
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+}
+.class-card-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+.class-card-name {
+  font-size: var(--step-2);
+}
+.class-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+}
+.tag-lead {
+  background: rgba(255, 197, 61, 0.16);
+  color: var(--gold);
+}
+.class-card-go {
+  position: absolute;
+  right: var(--sp-3);
+  bottom: var(--sp-3);
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.class-card:hover .class-card-go,
+.class-card:focus-visible .class-card-go {
+  opacity: 1;
+  transform: translateX(0);
+}
+.inline-edit {
+  display: flex;
+  gap: 0.4rem;
+}
+.inline-edit .input {
+  flex: 1;
+}
+
+/* ---------- CLASS SHELL ---------- */
+.class-head {
+  padding-block: var(--sp-4) var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.back-link {
+  align-self: flex-start;
+  color: var(--muted);
+  font-weight: 600;
+}
+.back-link:hover {
+  color: var(--ink);
+}
+.class-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.class-title-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--r-md);
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+}
+.class-title h1 {
+  font-size: var(--step-3);
+}
+.tabbar {
+  display: inline-flex;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--r-pill);
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.tab:hover {
+  color: var(--ink);
+}
+.tab.active {
+  background: var(--magenta);
+  color: #fff;
+  box-shadow: var(--glow-magenta);
+}
+
+/* ---------- ADD STUDENT / ADD CATEGORY FORMS ---------- */
+.add-student,
+.add-cat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+.add-student .field {
+  flex: 1;
+  min-width: 130px;
+}
+.field-num {
+  flex: 0 0 90px;
+  min-width: 90px;
+}
+.add-student-btn,
+.add-cat-btn {
+  height: 2.9rem;
+}
+
+/* ---------- STUDENT GRID / CARD ---------- */
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-3);
+}
+.student-card {
+  padding: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.student-top {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.avatar {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--surface-3), var(--surface-2));
+  border: 1px solid var(--line);
+  flex: none;
+}
+.student-id {
+  flex: 1;
+  min-width: 0;
+}
+.student-name {
+  font-size: var(--step-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.student-num {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+.student-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1;
+}
+.score-value {
+  font-size: var(--step-2);
+  font-weight: 700;
+  color: var(--cyan);
+}
+.score-label {
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+.student-break {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-height: 1.6rem;
+}
+.break-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--r-pill);
+  font-size: var(--step--1);
+  background: var(--surface-2);
+}
+.student-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+}
+.student-actions .btn-cyan {
+  flex: 1;
+}
+
+/* ---------- SCORE METER (signature) ---------- */
+.meter {
+  display: flex;
+  gap: 3px;
+  width: 100%;
+}
+.meter-seg {
+  flex: 1;
+  height: 8px;
+  border-radius: 3px;
+  background: var(--surface-3);
+  transition: background 0.4s ease, transform 0.4s ease;
+}
+.meter-seg.on {
+  transform: scaleY(1.05);
+}
+.meter-big .meter-seg {
+  height: 14px;
+  border-radius: 4px;
+}
+
+/* ---------- EDIT PAGE ---------- */
+.edit-intro {
+  margin-bottom: var(--sp-3);
+}
+.edit-intro h2 {
+  font-size: var(--step-2);
+}
+.edit-intro p {
+  margin-top: 0.3rem;
+  max-width: 60ch;
+}
+.field-weight {
+  flex: 0 0 110px;
+  min-width: 110px;
+}
+.cat-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.cat-row {
+  --accent: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-left: 4px solid var(--accent);
+}
+.cat-info {
+  flex: 1;
+  min-width: 0;
+}
+.cat-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-1);
+}
+.cat-sub {
+  display: block;
+}
+.weight-pill {
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--r-pill);
+  background: rgba(33, 230, 193, 0.14);
+  color: var(--cyan);
+  font-weight: 700;
+}
+.cat-actions {
+  display: flex;
+  gap: 0.3rem;
+}
+.cat-edit {
+  display: flex;
+  gap: 0.4rem;
+  flex: 1;
+  flex-wrap: wrap;
+}
+.cat-edit .input {
+  flex: 1;
+  min-width: 140px;
+}
+.cat-edit-weight {
+  flex: 0 0 90px;
+  min-width: 90px;
+}
+
+/* ---------- MODAL ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(8, 6, 24, 0.72);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: var(--sp-3);
+  animation: fade 0.18s ease;
+}
+.modal-panel {
+  width: min(560px, 100%);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  animation: pop 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  border-bottom: 1px solid var(--line);
+}
+.modal-head h2 {
+  font-size: var(--step-1);
+}
+.modal-body {
+  padding: var(--sp-3);
+  overflow-y: auto;
+}
+.modal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.modal-foot .foot-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+.confirm-msg {
+  color: var(--muted);
+  line-height: 1.55;
+}
+.edit-student-grid {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+/* ---------- AWARD MODAL ---------- */
+.award-meta {
+  display: flex;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+  flex-wrap: wrap;
+}
+.award-cats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.award-cat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.award-cat-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.award-cat-name {
+  font-weight: 600;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.stepper-input {
+  width: 4.5rem;
+  text-align: center;
+  padding: 0.5rem;
+}
+.award-total {
+  color: var(--muted);
+}
+.award-total strong {
+  color: var(--cyan);
+  font-size: var(--step-1);
+}
+
+/* ---------- RANKING / PODIUM ---------- */
+.ranking,
+.present-inner {
+  padding-bottom: var(--sp-5);
+}
+.rank-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+  flex-wrap: wrap;
+}
+.rank-title {
+  font-size: var(--step-3);
+}
+
+.podium {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+.podium-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+}
+.podium-slot.empty-slot {
+  visibility: hidden;
+}
+.podium-medal {
+  font-size: 2rem;
+}
+.podium-avatar {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-1);
+  background: var(--surface-2);
+  border: 2px solid var(--line);
+}
+.podium-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-0);
+  line-height: 1.15;
+}
+.podium-score {
+  font-size: var(--step-2);
+  font-weight: 700;
+}
+.podium-block {
+  width: 100%;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, var(--surface-3), var(--surface));
+  border: 1px solid var(--line);
+  border-bottom: none;
+}
+.podium-rank {
+  font-size: var(--step-3);
+  font-weight: 700;
+  color: var(--muted-2);
+  padding: 0.4rem;
+}
+.place-1 .podium-block {
+  height: 150px;
+  background: linear-gradient(180deg, rgba(255, 197, 61, 0.35), rgba(255, 197, 61, 0.05));
+  border-color: var(--gold);
+}
+.place-1 .podium-score {
+  color: var(--gold);
+}
+.place-1 .podium-avatar {
+  border-color: var(--gold);
+  box-shadow: 0 0 24px rgba(255, 197, 61, 0.4);
+}
+.place-2 .podium-block {
+  height: 112px;
+  border-color: var(--silver);
+}
+.place-2 .podium-score {
+  color: var(--silver);
+}
+.place-3 .podium-block {
+  height: 84px;
+  border-color: var(--bronze);
+}
+.place-3 .podium-score {
+  color: var(--bronze);
+}
+
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.rank-row {
+  display: grid;
+  grid-template-columns: 2.2rem 2.4rem 1fr 2fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0.7rem var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+.rank-pos {
+  font-size: var(--step-1);
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+}
+.rank-avatar {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step--1);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.rank-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rank-num {
+  color: var(--muted);
+  font-weight: 400;
+}
+.rank-score {
+  font-size: var(--step-1);
+  font-weight: 700;
+  color: var(--magenta);
+  text-align: right;
+}
+
+/* ---------- PRESENT MODE (student-facing big screen) ---------- */
+.present-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: var(--bg);
+  background-image: var(--bg-grad);
+  overflow-y: auto;
+}
+.present-inner {
+  max-width: 1400px;
+  margin-inline: auto;
+  padding: clamp(1.5rem, 4vw, 4rem);
+}
+/* Scale everything up for back-of-the-room legibility */
+.present-overlay .rank-title {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+}
+.present-overlay .podium-avatar {
+  width: clamp(4rem, 9vw, 7rem);
+  height: clamp(4rem, 9vw, 7rem);
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+}
+.present-overlay .podium-medal {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+}
+.present-overlay .podium-name {
+  font-size: clamp(1.1rem, 2.2vw, 2rem);
+}
+.present-overlay .podium-score {
+  font-size: clamp(1.8rem, 4vw, 3.5rem);
+}
+.present-overlay .place-1 .podium-block {
+  height: clamp(150px, 26vh, 320px);
+}
+.present-overlay .place-2 .podium-block {
+  height: clamp(112px, 19vh, 240px);
+}
+.present-overlay .place-3 .podium-block {
+  height: clamp(84px, 14vh, 180px);
+}
+.present-overlay .rank-row {
+  padding: clamp(0.7rem, 1.6vh, 1.4rem) var(--sp-4);
+}
+.present-overlay .rank-name {
+  font-size: clamp(1.1rem, 2.2vw, 2rem);
+}
+.present-overlay .rank-score,
+.present-overlay .rank-pos {
+  font-size: clamp(1.3rem, 2.6vw, 2.4rem);
+}
+.present-overlay .rank-avatar {
+  width: clamp(2.4rem, 4vw, 3.6rem);
+  height: clamp(2.4rem, 4vw, 3.6rem);
+  font-size: clamp(0.8rem, 1.6vw, 1.3rem);
+}
+
+.confetti-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 120;
+}
+
+/* ---------- EMPTY STATE ---------- */
+.empty {
+  text-align: center;
+  padding: var(--sp-6) var(--sp-3);
+  color: var(--muted);
+}
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--sp-2);
+}
+.empty-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-1);
+  color: var(--ink);
+}
+.empty-hint {
+  margin-top: 0.3rem;
+}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 640px) {
+  .add-class {
+    flex-direction: column;
+  }
+  .add-class .btn {
+    width: 100%;
+  }
+  .rank-row {
+    grid-template-columns: 1.8rem 2rem 1fr auto;
+  }
+  .rank-meter {
+    display: none;
+  }
+  .podium-name {
+    font-size: var(--step--1);
+  }
+  .class-title h1 {
+    font-size: var(--step-2);
+  }
+}
