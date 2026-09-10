@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { leaderboard } from '../lib/scoring.js'
+import { plural } from '../lib/steps.js'
 import EmptyState from '../components/EmptyState.jsx'
 import ConfirmDialog from '../components/ConfirmDialog.jsx'
 
@@ -34,28 +35,28 @@ export default function HomePage() {
   return (
     <div className="shell home">
       <header className="home-hero">
-        <p className="eyebrow">Class points · live leaderboard</p>
+        <p className="eyebrow">Punkty klasowe — tablica na żywo</p>
         <h1 className="home-title">
           Arcade <span className="title-pop">Scoreboard</span>
         </h1>
-        <p className="home-sub">Award weighted points, then put the leaderboard on the big screen.</p>
+        <p className="home-sub">Przyznawaj punkty z wagami, a potem wyświetl ranking na dużym ekranie.</p>
 
         <form className="add-class" onSubmit={submit}>
           <input
             className="input"
-            placeholder="New class name — e.g. Class 8-A"
+            placeholder="Nazwa nowej klasy — np. Klasa 8A"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            aria-label="New class name"
+            aria-label="Nazwa nowej klasy"
           />
           <button className="btn btn-primary" type="submit">
-            + Add class
+            + Dodaj klasę
           </button>
         </form>
       </header>
 
       {classes.length === 0 ? (
-        <EmptyState icon="🎓" title="No classes yet" hint="Add your first class above to get started." />
+        <EmptyState icon="🎓" title="Nie ma jeszcze klas" hint="Dodaj pierwszą klasę powyżej, żeby zacząć." />
       ) : (
         <ul className="class-grid">
           {classes.map((cls) => {
@@ -86,7 +87,7 @@ export default function HomePage() {
                     <div className="class-card-actions" onClick={(e) => e.stopPropagation()}>
                       <button
                         className="btn btn-icon btn-ghost btn-sm"
-                        aria-label={`Rename ${cls.name}`}
+                        aria-label={`Zmień nazwę ${cls.name}`}
                         onClick={() => {
                           setEditing(cls.id)
                           setEditName(cls.name)
@@ -96,7 +97,7 @@ export default function HomePage() {
                       </button>
                       <button
                         className="btn btn-icon btn-ghost btn-sm btn-danger"
-                        aria-label={`Delete ${cls.name}`}
+                        aria-label={`Usuń ${cls.name}`}
                         onClick={() => setToDelete(cls)}
                       >
                         🗑️
@@ -118,11 +119,11 @@ export default function HomePage() {
                         autoFocus
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        aria-label="Class name"
+                        aria-label="Nazwa klasy"
                         onKeyDown={(e) => e.key === 'Escape' && setEditing(null)}
                       />
                       <button className="btn btn-cyan btn-sm" type="submit">
-                        Save
+                        Zapisz
                       </button>
                     </form>
                   ) : (
@@ -131,19 +132,19 @@ export default function HomePage() {
 
                   <div className="class-card-meta">
                     <span className="tag">
-                      👥 {roster.length} {roster.length === 1 ? 'student' : 'students'}
+                      👥 {roster.length} {plural(roster.length, ['uczeń', 'uczniów', 'uczniów'])}
                     </span>
                     {top && top.score > 0 ? (
                       <span className="tag tag-lead">
                         👑 {top.student.firstName} · <span className="mono">{top.score}</span>
                       </span>
                     ) : (
-                      <span className="tag">No points yet</span>
+                      <span className="tag">Brak punktów</span>
                     )}
                   </div>
 
                   <span className="class-card-go" aria-hidden="true">
-                    Open →
+                    Otwórz
                   </span>
                 </div>
               </li>
@@ -154,9 +155,9 @@ export default function HomePage() {
 
       {toDelete && (
         <ConfirmDialog
-          title={`Delete “${toDelete.name}”?`}
-          message="This removes the class and all of its students, categories and points. This can’t be undone."
-          confirmLabel="Delete class"
+          title={`Usunąć „${toDelete.name}”?`}
+          message="Usuwa klasę razem z wszystkimi uczniami, kategoriami i punktami. Tego nie da się cofnąć."
+          confirmLabel="Usuń klasę"
           onConfirm={() => removeClass(toDelete.id)}
           onClose={() => setToDelete(null)}
         />

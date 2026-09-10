@@ -769,3 +769,257 @@
     font-size: var(--step-2);
   }
 }
+
+/* ---------- ROSTER SELECTION ---------- */
+/* The avatar doubles as the checkbox: same circle, initials swap for a tick. */
+.avatar-pick {
+  display: block;
+  cursor: pointer;
+  flex: none;
+  border-radius: 50%;
+}
+.avatar-pick .avatar {
+  grid-template-areas: "mark";
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.avatar-initials,
+.avatar-check {
+  grid-area: mark;
+}
+.avatar-check {
+  display: none;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: #06231d;
+}
+.avatar-pick:hover .avatar {
+  border-color: var(--cyan);
+}
+.avatar-pick:has(:checked) .avatar {
+  background: var(--cyan);
+  border-color: transparent;
+}
+.avatar-pick:has(:checked) .avatar-initials {
+  display: none;
+}
+.avatar-pick:has(:checked) .avatar-check {
+  display: block;
+}
+.avatar-pick:has(:focus-visible) .avatar {
+  outline: 3px solid var(--magenta);
+  outline-offset: 2px;
+}
+
+.student-card.is-selected {
+  box-shadow: inset 0 0 0 2px var(--cyan), var(--shadow-card);
+  border-color: transparent;
+}
+
+.roster-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+.pick-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pick-all input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+.roster-count {
+  margin-inline-start: auto;
+}
+.roster-toast {
+  background: var(--cyan);
+  color: #06231d;
+  font-weight: 700;
+}
+.roster-toast.is-hidden {
+  visibility: hidden;
+  padding: 0;
+  background: none;
+}
+
+/* ---------- BULK AWARD TRAY (the coin tray) ---------- */
+/* Attached to the bottom edge of the machine, not a floating card. */
+.tray {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 80;
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -18px 40px rgba(8, 6, 24, 0.55);
+  animation: tray-in 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+@keyframes tray-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tray {
+    animation: none;
+  }
+}
+.tray-inner {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: var(--sp-3) var(--sp-4);
+  padding-bottom: max(var(--sp-3), env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.tray-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.tray-count {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+}
+.tray-count strong {
+  color: var(--cyan);
+}
+.tray-head .btn {
+  margin-inline-start: auto;
+}
+.tray-empty {
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+.tray-cats {
+  display: flex;
+  gap: var(--sp-3);
+  overflow-x: auto;
+  padding-block: 0.2rem;
+  scrollbar-width: thin;
+}
+.tray-cat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: none;
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.tray-cat-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--step--1);
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* Steppers are labelled with the real step, so the rule is visible. */
+.step-btn {
+  padding: 0.45rem 0.6rem;
+  min-width: 3.1rem;
+}
+
+.tray-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+.tray-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.tray-total {
+  margin-inline-start: auto;
+  font-size: var(--step-0);
+  color: var(--muted);
+}
+.tray-total strong {
+  color: var(--ink);
+  font-size: var(--step-1);
+}
+.tray-total-sub {
+  color: var(--muted-2);
+}
+
+/* Keep the last row of cards clear of the tray, whatever height it is. */
+.has-tray {
+  padding-bottom: calc(var(--tray-h, 16rem) + var(--sp-4));
+}
+
+@media (max-width: 640px) {
+  .tray-inner {
+    padding-inline: var(--sp-3);
+  }
+  .tray-count {
+    font-size: var(--step-0);
+  }
+  .tray-foot .btn-primary {
+    flex: 1;
+    order: 3;
+  }
+  .tray-total {
+    margin-inline-start: 0;
+  }
+}
+
+/* ---------- STEP SETTINGS ---------- */
+.steps-card {
+  padding: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+.steps-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.steps-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--line);
+}
+.steps-labels {
+  flex: 1;
+  min-width: 200px;
+}
+.steps-labels > label {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+}
+.steps-hint {
+  margin-top: 0.15rem;
+  max-width: 44ch;
+}
+.steps-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.steps-scope {
+  color: var(--muted-2);
+}
+.steps-input {
+  width: 5.5rem;
+  text-align: center;
+}
+.steps-reset:disabled {
+  color: var(--muted-2);
+  opacity: 1;
+}

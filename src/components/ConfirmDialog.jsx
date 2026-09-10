@@ -1,6 +1,6 @@
 import Modal from './Modal.jsx'
 
-export default function ConfirmDialog({ title, message, confirmLabel = 'Delete', onConfirm, onClose }) {
+export default function ConfirmDialog({ title, message, confirmLabel = 'Usuń', onConfirm, onClose }) {
   return (
     <Modal
       title={title}
@@ -8,7 +8,7 @@ export default function ConfirmDialog({ title, message, confirmLabel = 'Delete',
       footer={
         <>
           <button className="btn btn-ghost" onClick={onClose}>
-            Cancel
+            Anuluj
           </button>
           <button
             className="btn btn-primary btn-danger"

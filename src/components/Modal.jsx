@@ -49,7 +49,7 @@ export default function Modal({ title, onClose, children, footer, labelId = 'mod
       <div className="modal-panel card" role="dialog" aria-modal="true" aria-labelledby={labelId} ref={panelRef}>
         <header className="modal-head">
           <h2 id={labelId}>{title}</h2>
-          <button className="btn btn-icon btn-ghost" onClick={onClose} aria-label="Close dialog">
+          <button className="btn btn-icon btn-ghost" onClick={onClose} aria-label="Zamknij okno">
             ✕
           </button>
         </header>

@@ -2,19 +2,26 @@ import { useState } from 'react'
 import Modal from './Modal.jsx'
 import { useStore } from '../store/useStore.js'
 import { fullName } from '../lib/scoring.js'
+import { snapToStep } from '../lib/steps.js'
 
 const todayStr = () => new Date().toISOString().slice(0, 10)
 
 // Award points across categories on a date. One Entry per non-zero category.
-export default function AddPointsModal({ student, categories, onClose }) {
+export default function AddPointsModal({ student, categories, step = 1, onClose }) {
   const awardPoints = useStore((s) => s.awardPoints)
   const [date, setDate] = useState(todayStr())
   const [note, setNote] = useState('')
   const [amounts, setAmounts] = useState({}) // categoryId -> number
 
   const bump = (id, delta) =>
-    setAmounts((a) => ({ ...a, [id]: clampInt((Number(a[id]) || 0) + delta) }))
+    setAmounts((a) => ({ ...a, [id]: clampInt(snapToStep((Number(a[id]) || 0) + delta, step)) }))
   const setVal = (id, v) => setAmounts((a) => ({ ...a, [id]: v }))
+  const snap = (id) =>
+    setAmounts((a) => {
+      const raw = a[id]
+      if (raw === '' || raw == null) return a
+      return { ...a, [id]: clampInt(snapToStep(Number(raw), step)) }
+    })
 
   const total = categories.reduce((sum, c) => sum + (Number(amounts[c.id]) || 0) * c.weight, 0)
   const anything = categories.some((c) => Number(amounts[c.id]))
@@ -27,19 +34,19 @@ export default function AddPointsModal({ student, categories, onClose }) {
 
   return (
     <Modal
-      title={`Award points · ${fullName(student)}`}
+      title={`Przyznaj punkty — ${fullName(student)}`}
       onClose={onClose}
       footer={
         <>
           <span className="award-total">
-            This award: <strong className="mono">{total > 0 ? `+${Math.round(total)}` : Math.round(total)}</strong> pts
+            Razem <strong className="mono">{total > 0 ? `+${Math.round(total)}` : Math.round(total)}</strong> pkt
           </span>
           <div className="foot-actions">
             <button className="btn btn-ghost" onClick={onClose}>
-              Cancel
+              Anuluj
             </button>
             <button className="btn btn-primary" onClick={save} disabled={!anything}>
-              Save award
+              Przypisz punkty
             </button>
           </div>
         </>
@@ -47,14 +54,14 @@ export default function AddPointsModal({ student, categories, onClose }) {
     >
       {categories.length === 0 ? (
         <p className="confirm-msg">
-          No categories yet. Add some on the <strong>Edit</strong> tab first — points are always tied to a category so
-          you know what they’re for.
+          Nie ma jeszcze kategorii. Dodaj je najpierw na karcie <strong>Kategorie</strong> — każdy punkt
+          należy do kategorii, żebyś wiedział, za co został przyznany.
         </p>
       ) : (
         <>
           <div className="award-meta">
             <div className="field">
-              <label htmlFor="award-date">Date</label>
+              <label htmlFor="award-date">Data</label>
               <input
                 id="award-date"
                 type="date"
@@ -64,11 +71,11 @@ export default function AddPointsModal({ student, categories, onClose }) {
               />
             </div>
             <div className="field" style={{ flex: 1 }}>
-              <label htmlFor="award-note">Note (optional)</label>
+              <label htmlFor="award-note">Notatka (opcjonalnie)</label>
               <input
                 id="award-note"
                 className="input"
-                placeholder="e.g. solved the bonus problem"
+                placeholder="np. rozwiązał zadanie dodatkowe"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
               />
@@ -86,20 +93,30 @@ export default function AddPointsModal({ student, categories, onClose }) {
                     <span className="tag">×{c.weight}</span>
                   </div>
                   <div className="stepper">
-                    <button className="btn btn-icon btn-sm" onClick={() => bump(c.id, -1)} aria-label={`Minus one ${c.name}`}>
-                      −
+                    <button
+                      className="btn btn-sm step-btn mono"
+                      onClick={() => bump(c.id, -step)}
+                      aria-label={`Odejmij ${step} w kategorii ${c.name}`}
+                    >
+                      −{step}
                     </button>
                     <input
                       className="input stepper-input mono"
                       type="number"
                       inputMode="numeric"
+                      step={step}
                       value={v}
                       placeholder="0"
-                      onChange={(e) => setVal(c.id, e.target.value === '' ? '' : clampInt(Number(e.target.value)))}
-                      aria-label={`Points for ${c.name}`}
+                      onChange={(e) => setVal(c.id, e.target.value === '' ? '' : Number(e.target.value))}
+                      onBlur={() => snap(c.id)}
+                      aria-label={`Punkty w kategorii ${c.name}`}
                     />
-                    <button className="btn btn-icon btn-sm" onClick={() => bump(c.id, 1)} aria-label={`Plus one ${c.name}`}>
-                      +
+                    <button
+                      className="btn btn-sm step-btn mono"
+                      onClick={() => bump(c.id, step)}
+                      aria-label={`Dodaj ${step} w kategorii ${c.name}`}
+                    >
+                      +{step}
                     </button>
                   </div>
                 </li>
@@ -114,5 +131,5 @@ export default function AddPointsModal({ student, categories, onClose }) {
 
 function clampInt(n) {
   if (!Number.isFinite(n)) return 0
-  return Math.max(-999, Math.min(999, Math.trunc(n)))
+  return Math.max(-9999, Math.min(9999, n))
 }

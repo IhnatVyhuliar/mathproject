@@ -47,7 +47,7 @@ export default function RankingPage() {
   }
 
   if (students.length === 0) {
-    return <EmptyState icon="🏁" title="No students to rank" hint="Add students on the Players tab first." />
+    return <EmptyState icon="🏁" title="Nie ma kogo sklasyfikować" hint="Najpierw dodaj uczniów na karcie Uczniowie." />
   }
 
   const podium = ranked.slice(0, 3)
@@ -57,26 +57,26 @@ export default function RankingPage() {
     <>
       <div className="rank-head">
         <div>
-          <p className="eyebrow">{cls.name} · Top 10</p>
-          <h2 className="rank-title">🏆 Leaderboard</h2>
+          <p className="eyebrow">{cls.name} — najlepsza dziesiątka</p>
+          <h2 className="rank-title">🏆 Tablica wyników</h2>
         </div>
         {!presenting && (
           <button className="btn btn-cyan" onClick={enterPresent}>
-            ⛶ Present
+            ⛶ Prezentuj
           </button>
         )}
         {presenting && (
           <button className="btn btn-ghost" onClick={exitPresent}>
-            ✕ Exit
+            ✕ Zamknij
           </button>
         )}
       </div>
 
       {!hasPoints ? (
-        <EmptyState icon="✨" title="No points awarded yet" hint="Award points on the Players tab to start the race." />
+        <EmptyState icon="✨" title="Nie przyznano jeszcze punktów" hint="Przyznaj punkty na karcie Uczniowie, żeby rozpocząć wyścig." />
       ) : (
         <>
-          <ol className="podium" aria-label="Top three">
+          <ol className="podium" aria-label="Najlepsza trójka">
             {[1, 0, 2].map((slot) => {
               const row = podium[slot]
               if (!row) return <li key={slot} className="podium-slot empty-slot" />
