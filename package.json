@@ -3,10 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "app:dev": "node scripts/dev.mjs",
+    "app:smoke": "npm run build && node --disable-warning=ExperimentalWarning scripts/smoke.mjs",
     "test": "node --disable-warning=ExperimentalWarning --test \"src/**/*.test.js\" \"electron/**/*.test.js\""
   },
   "dependencies": {
