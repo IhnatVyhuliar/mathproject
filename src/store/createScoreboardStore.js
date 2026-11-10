@@ -89,6 +89,8 @@ export function createScoreboardStore({ api }) {
         }
       },
       dismissError: () => set((s) => ({ sync: { ...s.sync, lastError: null } })),
+      hasPendingWrites: () => !queue.isIdle(),
+      whenIdle: () => queue.whenIdle(),
       exportToFile: async () => {
         await queue.whenIdle()
         return api.exportToFile()

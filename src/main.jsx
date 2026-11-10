@@ -6,6 +6,8 @@ import './styles/tokens.css'
 import './styles/global.css'
 import './styles/app.css'
 
+import { useStore } from './store/useStore.js'
+import { installCloseGuard } from './lib/closeGuard.js'
 import App from './App.jsx'
 import HomePage from './pages/HomePage.jsx'
 import ClassLayout from './pages/ClassLayout.jsx'
@@ -33,6 +35,9 @@ const router = createHashRouter([
     ],
   },
 ])
+
+// Store actions are stable, so reading them once is enough.
+installCloseGuard(window, useStore.getState())
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
