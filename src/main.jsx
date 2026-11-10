@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+import { createHashRouter, RouterProvider, Navigate } from 'react-router-dom'
 
 import './styles/tokens.css'
 import './styles/global.css'
@@ -13,7 +13,7 @@ import PlayersPage from './pages/PlayersPage.jsx'
 import RankingPage from './pages/RankingPage.jsx'
 import EditPage from './pages/EditPage.jsx'
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <App />,

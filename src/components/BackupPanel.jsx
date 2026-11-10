@@ -1,36 +1,31 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { downloadJson } from '../lib/download.js'
-import {
-  ImportError,
-  buildExport,
-  exportFileName,
-  formatCounts,
-  hasSavedLocalData,
-  readBrowserData,
-  summarize,
-} from '../lib/exportFormat.js'
+import { formatCounts, summarize } from '../lib/exportFormat.js'
 
 export default function BackupPanel() {
   const classes = useStore((s) => s.classes)
   const students = useStore((s) => s.students)
   const categories = useStore((s) => s.categories)
   const entries = useStore((s) => s.entries)
+  const exportToFile = useStore((s) => s.exportToFile)
+  const importFromFile = useStore((s) => s.importFromFile)
+  const revealDatabase = useStore((s) => s.revealDatabase)
+  const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [result, setResult] = useState(null)
 
-  // Cheap, so checked on every render (the store saves right after each change).
-  const hasData = hasSavedLocalData(window.localStorage)
-
-  const download = () => {
+  const run = async (action, toResult) => {
+    setBusy(true)
     setError('')
+    setResult(null)
     try {
-      const data = readBrowserData(window.localStorage)
-      if (!data) return
-      const file = buildExport(data, { source: 'browser' })
-      downloadJson(exportFileName(file.exportedAt), file)
+      const value = await action()
+      if (value?.canceled) return
+      setResult(toResult(value))
     } catch (e) {
-      if (e instanceof ImportError) setError(`Nie udało się odczytać zapisanych danych: ${e.message}`)
-      else throw e
+      setError(e.message)
+    } finally {
+      setBusy(false)
     }
   }
 
@@ -38,22 +33,37 @@ export default function BackupPanel() {
     <section className="backup-panel card" aria-labelledby="backup-title">
       <h2 id="backup-title" className="backup-title">Kopia danych</h2>
       <p className="muted-line">
-        Pobierz wszystkie klasy, uczniów, kategorie i punkty zapisane w tej przeglądarce do pliku .json — żeby
-        przenieść je do aplikacji Arcade Scoreboard.
+        Dane są zapisane w bazie na tym komputerze. Kopię (.json) możesz przenieść na inny komputer i tam
+        zaimportować.
       </p>
-      {hasData ? (
-        <p className="muted-line">
-          {formatCounts(summarize({ classes, students, categories, entries }))}
-        </p>
-      ) : (
-        <p className="muted-line">
-          W tej przeglądarce nie ma zapisanych danych. Otwórz aplikację pod tym samym adresem, pod którym zwykle z
-          niej korzystasz.
-        </p>
+      <p className="muted-line">{formatCounts(summarize({ classes, students, categories, entries }))}</p>
+      <div className="backup-actions">
+        <button className="btn btn-primary" type="button" disabled={busy} onClick={() => run(exportToFile, (v) => ({ saved: v.path }))}>
+          ⬇ Eksportuj do pliku…
+        </button>
+        <button className="btn" type="button" disabled={busy} onClick={() => run(importFromFile, (v) => ({ imported: v }))}>
+          ⬆ Importuj z pliku…
+        </button>
+        <button className="btn" type="button" disabled={busy} onClick={() => run(revealDatabase, () => null)}>
+          📁 Pokaż plik bazy
+        </button>
+      </div>
+      {result?.saved && <p className="muted-line">Zapisano kopię: {result.saved}</p>}
+      {result?.imported && (
+        <>
+          <p className="muted-line">Zaimportowano: {formatCounts(result.imported.counts)}</p>
+          {result.imported.warnings?.length > 0 && (
+            <ul className="muted-line">
+              {result.imported.warnings.map((w, i) => (
+                <li key={i}>{w}</li>
+              ))}
+            </ul>
+          )}
+          {result.imported.backupPath && (
+            <p className="muted-line">Kopia poprzednich danych: {result.imported.backupPath}</p>
+          )}
+        </>
       )}
-      <button className="btn btn-primary" type="button" disabled={!hasData} onClick={download}>
-        ⬇ Pobierz kopię (.json)
-      </button>
       {error && (
         <p className="muted-line" role="alert">
           {error}
