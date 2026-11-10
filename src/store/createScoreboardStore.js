@@ -49,10 +49,14 @@ export function createScoreboardStore({ api }) {
         })),
     })
 
+    // Bumped by every local change; lets load() spot edits made mid-fetch.
+    let writeGen = 0
+
     // Snapshot, apply locally (synchronously), then queue the write.
     const mutate = (apply, send) => {
       const before = pickData(get())
       apply()
+      writeGen++
       queue.enqueue(send, before)
     }
 
@@ -69,7 +73,16 @@ export function createScoreboardStore({ api }) {
       load: async () => {
         set((s) => ({ sync: { ...s.sync, status: s.sync.status === 'ready' ? 'ready' : 'loading' } }))
         try {
-          const data = await api.getState()
+          // The UI stays live during a reload (e.g. after import). A snapshot
+          // requested before an edit's write misses that edit, so drain the
+          // queue and fetch again until no edit happened in between.
+          let data
+          for (let attempt = 1; ; attempt++) {
+            const gen = writeGen
+            await queue.whenIdle()
+            data = await api.getState()
+            if (gen === writeGen || attempt >= 5) break
+          }
           set({ ...pickData(data), sync: { status: 'ready', lastError: null } })
         } catch (err) {
           set({ sync: { status: 'error', lastError: err.message } })

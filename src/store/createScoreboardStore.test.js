@@ -160,3 +160,30 @@ test('importFromFile waits for pending writes, then reloads state', async () => 
   await p
   assert.deepEqual(order, ['createClass:start', 'createClass:end', 'import', 'getState'])
 })
+
+test('load() refetches when an edit lands while the snapshot is in flight', async () => {
+  const db = structuredClone(demo.data)
+  let release
+  let gated = false
+  const { store, calls } = await ready({
+    createClass: async (cls) => { db.classes.push(cls); return null },
+    getState: async () => {
+      const snap = structuredClone(db) // taken when main handles the request
+      if (gated) {
+        gated = false
+        await new Promise((r) => (release = r))
+      }
+      return snap
+    },
+  })
+  gated = true
+  const p = store.getState().load()
+  await flush()
+  const cls = store.getState().addClass('Nowa') // UI stays live during a reload
+  await flush()
+  release()
+  await p
+  assert.ok(store.getState().classes.some((c) => c.id === cls.id))
+  assert.equal(calls.filter((c) => c[0] === 'getState').length, 2)
+  assert.equal(store.getState().sync.status, 'ready')
+})
