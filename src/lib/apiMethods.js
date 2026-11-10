@@ -7,3 +7,7 @@ export const API_METHODS = [
   'createPoints',
   'exportToFile', 'importFromFile', 'revealDatabase',
 ]
+
+// Most point entries one createPoints call may carry (one atomic transaction).
+// Checked in main and, before any optimistic change, in the store.
+export const MAX_POINTS_PER_WRITE = 20000

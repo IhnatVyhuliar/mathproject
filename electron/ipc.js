@@ -9,6 +9,7 @@ import { validateEntity, validatePatch, validateSettings } from './validate.js'
 import {
   parseImport, ImportError, buildExport, exportFileName, summarize, formatCounts,
 } from '../src/lib/exportFormat.js'
+import { MAX_POINTS_PER_WRITE } from '../src/lib/apiMethods.js'
 
 const ok = (value) => ({ ok: true, value })
 const fail = (error) => ({ ok: false, error })
@@ -80,7 +81,7 @@ export function createHandlers(db, { dialogs, shell, dbPath, backupDir, now = ()
     deleteCategory: remove('category'),
 
     createPoints: guard((entries) => {
-      if (!Array.isArray(entries) || entries.length < 1 || entries.length > 1000) {
+      if (!Array.isArray(entries) || entries.length < 1 || entries.length > MAX_POINTS_PER_WRITE) {
         throw new Invalid('Nieprawidłowa liczba wpisów')
       }
       for (const e of entries) check(validateEntity('point', e))

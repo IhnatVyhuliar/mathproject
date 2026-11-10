@@ -7,6 +7,7 @@ import {
   snapToStep,
 } from '../lib/steps.js'
 import { pickData } from '../lib/exportFormat.js'
+import { MAX_POINTS_PER_WRITE } from '../lib/apiMethods.js'
 import { createWriteQueue } from './writeQueue.js'
 
 const uid = () =>
@@ -256,6 +257,17 @@ export function createScoreboardStore({ api }) {
         const live = awards.filter((a) => a.categoryId && Number(a.points) !== 0)
         const ids = [...new Set(studentIds)].filter(Boolean)
         if (!live.length || !ids.length) return { entries: 0, students: 0 }
+        // Refuse before touching state, so the caller keeps the user's draft.
+        const count = live.length * ids.length
+        if (count > MAX_POINTS_PER_WRITE) {
+          set((s) => ({
+            sync: {
+              ...s.sync,
+              lastError: `Za dużo wpisów naraz (${count}, limit ${MAX_POINTS_PER_WRITE}). Wybierz mniej uczniów lub kategorii.`,
+            },
+          }))
+          return { entries: 0, students: ids.length }
+        }
 
         const stamp = now()
         const on = date || today()

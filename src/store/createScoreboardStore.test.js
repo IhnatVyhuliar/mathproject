@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { API_METHODS } from '../lib/apiMethods.js'
+import { API_METHODS, MAX_POINTS_PER_WRITE } from '../lib/apiMethods.js'
 import { createScoreboardStore } from './createScoreboardStore.js'
 
 const demo = JSON.parse(readFileSync(new URL('../../test/fixtures/demo-export.json', import.meta.url), 'utf8'))
@@ -94,6 +94,19 @@ test('awardPointsBulk: one createPoints for all', async () => {
   assert.equal(calls.length, 1)
   assert.equal(calls[0][0], 'createPoints')
   assert.equal(calls[0][1].length, 6)
+})
+
+test('awardPointsBulk over the limit changes nothing and keeps the draft', async () => {
+  const { store, calls } = await ready()
+  const before = store.getState().entries
+  const cats = store.getState().categories.slice(0, 2)
+  const studentIds = Array.from({ length: MAX_POINTS_PER_WRITE / 2 + 1 }, (_, i) => `s-${i}`)
+  const res = store.getState().awardPointsBulk(studentIds, cats.map((c) => ({ categoryId: c.id, points: 5 })))
+  assert.equal(res.entries, 0) // BulkAwardBar clears its draft only when entries > 0
+  assert.equal(store.getState().entries, before)
+  assert.match(store.getState().sync.lastError, /Za dużo wpisów/)
+  await flush()
+  assert.deepEqual(calls, [])
 })
 
 test('per-keystroke setSteps keeps order, last value wins', async () => {

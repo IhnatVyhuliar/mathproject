@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { openDb, importData, readState } from './db.js'
 import { createHandlers, registerIpc } from './ipc.js'
-import { API_METHODS } from '../src/lib/apiMethods.js'
+import { API_METHODS, MAX_POINTS_PER_WRITE } from '../src/lib/apiMethods.js'
 import { parseImport } from '../src/lib/exportFormat.js'
 
 const fixturePath = (n) => fileURLToPath(new URL(`../test/fixtures/${n}`, import.meta.url))
@@ -99,6 +99,18 @@ test('createPoints is all-or-nothing', () => {
   assert.equal(h.createPoints([]).ok, false)
   assert.equal(h.createPoints([e('p-1', 5), e('p-2', 2)]).ok, true)
   assert.equal(readState(db).entries.length, before + 2)
+})
+
+test('createPoints takes a big bulk award (40 students × 26 categories) in one call', () => {
+  const s = demo.data.students[0], c = demo.data.categories.find((x) => x.classId === s.classId)
+  const many = (n) => Array.from({ length: n }, (_, i) => ({
+    id: `big-${i}`, studentId: s.id, categoryId: c.id, points: 5, note: '', date: '2026-11-10', createdAt: 't',
+  }))
+  const before = readState(db).entries.length
+  assert.deepEqual(h.createPoints(many(MAX_POINTS_PER_WRITE + 1)), { ok: false, error: 'Nieprawidłowa liczba wpisów' })
+  assert.equal(readState(db).entries.length, before)
+  assert.equal(h.createPoints(many(40 * 26)).ok, true)
+  assert.equal(readState(db).entries.length, before + 40 * 26)
 })
 
 test('unexpected errors are logged and masked', () => {
