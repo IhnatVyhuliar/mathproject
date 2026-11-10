@@ -3,12 +3,13 @@ import assert from 'node:assert/strict'
 import { mkdtempSync, readFileSync, readdirSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { openDb, importData, readState } from './db.js'
 import { createHandlers, registerIpc } from './ipc.js'
 import { API_METHODS } from '../src/lib/apiMethods.js'
 import { parseImport } from '../src/lib/exportFormat.js'
 
-const fixturePath = (n) => new URL(`../test/fixtures/${n}`, import.meta.url).pathname
+const fixturePath = (n) => fileURLToPath(new URL(`../test/fixtures/${n}`, import.meta.url))
 const readFixture = (n) => readFileSync(fixturePath(n), 'utf8')
 const demo = JSON.parse(readFixture('demo-export.json'))
 
