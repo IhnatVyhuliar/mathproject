@@ -6,3 +6,4 @@ arcade-scoreboard-*.json
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm
+release/

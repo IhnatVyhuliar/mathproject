@@ -1,0 +1,22 @@
+appId: app.arcade-scoreboard
+productName: Arcade Scoreboard
+directories: { output: release }
+files:
+  - package.json
+  - dist/**
+  - electron/**
+  - "!electron/**/*.test.js"
+  - src/lib/exportFormat.js
+  - src/lib/steps.js
+  - src/lib/apiMethods.js
+win:
+  target: nsis
+nsis:
+  oneClick: true
+  perMachine: false
+  artifactName: ScoreboardSetup.exe
+  shortcutName: Arcade Scoreboard
+  createDesktopShortcut: true
+  deleteAppDataOnUninstall: false
+linux:
+  target: dir
