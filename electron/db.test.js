@@ -13,6 +13,7 @@ test('file DB runs in WAL with foreign keys on', () => {
   const db = openDb(join(mkdtempSync(join(tmpdir(), 'asb-')), 't.sqlite'))
   assert.equal(db.prepare('PRAGMA journal_mode').get().journal_mode, 'wal')
   assert.equal(db.prepare('PRAGMA foreign_keys').get().foreign_keys, 1)
+  assert.equal(db.prepare('PRAGMA busy_timeout').get().timeout, 5000)
 })
 
 test('fresh DB: defaults, no data', () => {
