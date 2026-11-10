@@ -7,6 +7,7 @@ import {
   normalizeStep,
   snapToStep,
 } from '../lib/steps.js'
+import { normalizeData } from '../lib/exportFormat.js'
 
 const uid = () =>
   typeof crypto !== 'undefined' && crypto.randomUUID
@@ -245,24 +246,9 @@ export const useStore = create(
     {
       name: 'arcade-scoreboard@v1',
       version: 2,
-      // v1 predates the configurable steps: fill in the defaults and the
-      // per-class "inherit" markers so older saved states keep working.
-      migrate: (state, from) => {
-        if (!state) return state
-        if (from < 2) {
-          return {
-            ...state,
-            pointStep: normalizeStep(state.pointStep, DEFAULT_POINT_STEP),
-            weightStep: normalizeStep(state.weightStep, DEFAULT_WEIGHT_STEP),
-            classes: (state.classes || []).map((c) => ({
-              pointStep: null,
-              weightStep: null,
-              ...c,
-            })),
-          }
-        }
-        return state
-      }
+      // Older saved states lack the configurable steps etc.; normalizeData
+      // fills every gap without dropping anything.
+      migrate: (state, from) => state && { ...state, ...normalizeData(state, from) },
     },
   ),
 )

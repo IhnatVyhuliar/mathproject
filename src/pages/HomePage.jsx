@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { leaderboard } from '../lib/scoring.js'
 import { plural } from '../lib/steps.js'
 import EmptyState from '../components/EmptyState.jsx'
+import BackupPanel from '../components/BackupPanel.jsx'
 import ConfirmDialog from '../components/ConfirmDialog.jsx'
 
 export default function HomePage() {
@@ -152,6 +153,8 @@ export default function HomePage() {
           })}
         </ul>
       )}
+
+      <BackupPanel />
 
       {toDelete && (
         <ConfirmDialog

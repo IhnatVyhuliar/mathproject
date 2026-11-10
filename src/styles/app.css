@@ -1023,3 +1023,19 @@
   color: var(--muted-2);
   opacity: 1;
 }
+
+.backup-panel {
+  margin-top: 32px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.backup-title {
+  font-size: 1.1rem;
+  margin: 0;
+}
+.backup-panel .muted-line {
+  margin: 0;
+}
