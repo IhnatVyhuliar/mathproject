@@ -1,3 +1,4 @@
+import { mkdirSync } from 'node:fs'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -11,7 +12,8 @@ if (process.env.SCOREBOARD_DATA_DIR) {
   app.setPath('userData', process.env.SCOREBOARD_DATA_DIR)
 }
 
-const devUrl = process.env.VITE_DEV_SERVER_URL
+// A dev server URL is honoured only when running unpackaged.
+const devUrl = app.isPackaged ? undefined : process.env.VITE_DEV_SERVER_URL
 const distUrl = pathToFileURL(join(__dirname, '../dist')).href + '/'
 // Trusted origin/prefix of the app content (dev server origin or dist directory).
 const trustedPrefix = devUrl ? new URL(devUrl).origin + '/' : distUrl
@@ -37,10 +39,25 @@ if (!app.requestSingleInstanceLock()) {
 
   app.on('window-all-closed', () => app.quit())
 
+  const startFailed = (err, dbPath) => {
+    console.error(err)
+    dialog.showErrorBox(
+      'Arcade Scoreboard',
+      `Nie udało się otworzyć bazy danych.\n\n${err?.message ?? err}\nPlik: ${dbPath}`,
+    )
+    app.exit(1)
+  }
+
   app.whenReady().then(() => {
     const userData = app.getPath('userData')
     const dbPath = join(userData, 'scoreboard.sqlite')
-    db = openDb(dbPath)
+    try {
+      mkdirSync(userData, { recursive: true })
+      db = openDb(dbPath)
+    } catch (err) {
+      startFailed(err, dbPath)
+      return
+    }
 
     // Dialogs are bound to the live main window so they are modal.
     const dialogs = {
@@ -80,5 +97,5 @@ if (!app.requestSingleInstanceLock()) {
 
     if (devUrl) win.loadURL(devUrl)
     else win.loadFile(join(__dirname, '../dist/index.html'))
-  })
+  }).catch((err) => startFailed(err, join(app.getPath('userData'), 'scoreboard.sqlite')))
 }

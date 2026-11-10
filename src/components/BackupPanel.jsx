@@ -14,7 +14,7 @@ export default function BackupPanel() {
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
 
-  const run = async (action, toResult) => {
+  const run = async (action, toResult, failure) => {
     setBusy(true)
     setError('')
     setResult(null)
@@ -23,7 +23,7 @@ export default function BackupPanel() {
       if (value?.canceled) return
       setResult(toResult(value))
     } catch (e) {
-      setError(e.message)
+      setError(`${failure}: ${e.message}`)
     } finally {
       setBusy(false)
     }
@@ -38,13 +38,13 @@ export default function BackupPanel() {
       </p>
       <p className="muted-line">{formatCounts(summarize({ classes, students, categories, entries }))}</p>
       <div className="backup-actions">
-        <button className="btn btn-primary" type="button" disabled={busy} onClick={() => run(exportToFile, (v) => ({ saved: v.path }))}>
+        <button className="btn btn-primary" type="button" disabled={busy} onClick={() => run(exportToFile, (v) => ({ saved: v.path }), 'Nie udało się wyeksportować')}>
           ⬇ Eksportuj do pliku…
         </button>
-        <button className="btn" type="button" disabled={busy} onClick={() => run(importFromFile, (v) => ({ imported: v }))}>
+        <button className="btn" type="button" disabled={busy} onClick={() => run(importFromFile, (v) => ({ imported: v }), 'Nie udało się zaimportować')}>
           ⬆ Importuj z pliku…
         </button>
-        <button className="btn" type="button" disabled={busy} onClick={() => run(revealDatabase, () => null)}>
+        <button className="btn" type="button" disabled={busy} onClick={() => run(revealDatabase, () => null, 'Nie udało się otworzyć folderu')}>
           📁 Pokaż plik bazy
         </button>
       </div>

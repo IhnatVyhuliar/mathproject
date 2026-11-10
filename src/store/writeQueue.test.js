@@ -52,3 +52,20 @@ test('whenIdle resolves after the queue drains', async () => {
   await flush()
   assert.equal(done, true)
 })
+
+test('queue keeps working after revert/onError throws', async () => {
+  const sent = []
+  const q = createWriteQueue({
+    revert() { throw new Error('revert boom') },
+    onError() {},
+  })
+  const orig = console.error
+  console.error = () => {}
+  q.enqueue(() => Promise.reject(new Error('send boom')), {})
+  await flush()
+  assert.equal(q.isIdle(), true)
+  q.enqueue(() => (sent.push('next'), Promise.resolve()), {})
+  await flush()
+  assert.deepEqual(sent, ['next'])
+  console.error = orig
+})

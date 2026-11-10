@@ -14,24 +14,27 @@ export function createWriteQueue({ revert, onError }) {
   async function run() {
     if (running) return
     running = true
-    while (items.length) {
-      const { send, snapshot } = items.shift()
-      try {
-        await send()
-      } catch (err) {
-        items = []
-        revert(snapshot)
-        onError(err)
+    try {
+      while (items.length) {
+        const { send, snapshot } = items.shift()
+        try {
+          await send()
+        } catch (err) {
+          items = []
+          revert(snapshot)
+          onError(err)
+        }
       }
+    } finally {
+      running = false
+      settle()
     }
-    running = false
-    settle()
   }
 
   return {
     enqueue(send, snapshot) {
       items.push({ send, snapshot })
-      run()
+      run().catch((err) => console.error(err))
     },
     isIdle: () => !running && items.length === 0,
     whenIdle() {

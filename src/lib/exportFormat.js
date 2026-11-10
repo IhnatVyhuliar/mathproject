@@ -130,7 +130,7 @@ export function parseImport(input) {
   let obj = input
   if (typeof input === 'string') {
     try {
-      obj = JSON.parse(input)
+      obj = JSON.parse(input.replace(/^\uFEFF/, ''))
     } catch {
       throw new ImportError('plik nie jest poprawnym JSON-em.')
     }
@@ -188,8 +188,14 @@ export function buildExport(data, { source, exportedAt = new Date().toISOString(
   }
 }
 
-export function exportFileName(iso) {
-  return `arcade-scoreboard-${iso.slice(0, 10)}.json`
+// Accepts a Date (named after its local calendar day) or an ISO string (its date part).
+export function exportFileName(when) {
+  let day = String(when).slice(0, 10)
+  if (when instanceof Date) {
+    const p = (n) => String(n).padStart(2, '0')
+    day = `${when.getFullYear()}-${p(when.getMonth() + 1)}-${p(when.getDate())}`
+  }
+  return `arcade-scoreboard-${day}.json`
 }
 
 export function hasSavedLocalData(storage) {

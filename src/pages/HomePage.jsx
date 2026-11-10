@@ -57,7 +57,7 @@ export default function HomePage() {
       </header>
 
       {classes.length === 0 ? (
-        <EmptyState icon="🎓" title="Nie ma jeszcze klas" hint="Dodaj pierwszą klasę powyżej, żeby zacząć." />
+        <EmptyState icon="🎓" title="Nie ma jeszcze klas" hint="Dodaj pierwszą klasę powyżej, żeby zacząć. Masz już zapisane dane? Wczytasz je przyciskiem „Importuj z pliku…” poniżej." />
       ) : (
         <ul className="class-grid">
           {classes.map((cls) => {

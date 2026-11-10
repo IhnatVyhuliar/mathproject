@@ -78,3 +78,11 @@ test('formatCounts uses Polish plurals', () =>
 
 test('exportFileName', () =>
   assert.equal(exportFileName('2026-11-10T08:00:00.000Z'), 'arcade-scoreboard-2026-11-10.json'))
+
+test('exportFileName from a Date uses the local calendar day, independent of timezone', () =>
+  assert.equal(exportFileName(new Date(2026, 10, 10, 0, 30)), 'arcade-scoreboard-2026-11-10.json'))
+
+test('parseImport accepts a UTF-8 BOM', () => {
+  const text = '﻿' + JSON.stringify(demo)
+  assert.deepEqual(parseImport(text).data, parseImport(JSON.stringify(demo)).data)
+})

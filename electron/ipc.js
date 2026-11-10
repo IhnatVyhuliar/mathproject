@@ -90,7 +90,7 @@ export function createHandlers(db, { dialogs, shell, dbPath, backupDir, now = ()
 
     exportToFile: guardAsync(async () => {
       const { canceled, filePath } = await dialogs.showSaveDialog({
-        defaultPath: exportFileName(now().toISOString()),
+        defaultPath: exportFileName(now()),
         filters: [{ name: 'Kopia Arcade Scoreboard', extensions: ['json'] }],
       })
       if (canceled || !filePath) return { canceled: true }
@@ -115,7 +115,7 @@ export function createHandlers(db, { dialogs, shell, dbPath, backupDir, now = ()
           : []),
       ].join('\n')
       const { response } = await dialogs.showMessageBox({
-        type: 'question', buttons: ['Importuj', 'Anuluj'], defaultId: 1, cancelId: 1,
+        type: 'question', buttons: ['Importuj', 'Anuluj'], defaultId: 1, cancelId: 1, noLink: true,
         message: 'Zaimportować dane z pliku?', detail,
       })
       if (response === 1) return { canceled: true }

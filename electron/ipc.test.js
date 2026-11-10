@@ -121,7 +121,7 @@ test('exportToFile writes a file parseImport accepts; cancel writes nothing', as
   assert.deepEqual(parseImport(readFileSync(out, 'utf8')).data, demo.data)
   assert.equal(JSON.parse(readFileSync(out, 'utf8')).source, 'app')
   const opts = dialogs.calls.at(-1)[1]
-  assert.equal(opts.defaultPath, 'arcade-scoreboard-2026-11-10.json')
+  assert.equal(opts.defaultPath, 'arcade-scoreboard-2026-11-10.json') // local date of the injected now()
   assert.deepEqual(opts.filters, [{ name: 'Kopia Arcade Scoreboard', extensions: ['json'] }])
 })
 
@@ -132,6 +132,7 @@ test('import into non-empty DB: cancel changes nothing (Review Focus 2)', async 
   assert.equal(existsSync(backupDir), false)
   const box = dialogs.calls.find((c) => c[0] === 'box')[1]
   assert.deepEqual(box.buttons, ['Importuj', 'Anuluj'])
+  assert.equal(box.noLink, true)
   assert.match(box.detail, /zostaną zastąpione/)
 })
 
