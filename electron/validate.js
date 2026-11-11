@@ -1,6 +1,8 @@
 // Validation of records coming from the renderer. Each function returns an
 // error message (Polish) or null when the value is fine.
 
+import { isHexColor } from '../src/lib/exportFormat.js'
+
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
 const finite = (v) => typeof v === 'number' && Number.isFinite(v)
 
@@ -24,7 +26,7 @@ const RULES = {
   number: [anyStr, 'Nieprawidłowy numer'],
   note: [anyStr, 'Nieprawidłowa notatka'],
   icon: [anyStr, 'Nieprawidłowa ikona'],
-  color: [anyStr, 'Nieprawidłowy kolor'],
+  color: [isHexColor, 'Nieprawidłowy kolor'],
   weight: [positive, 'Waga musi być liczbą większą od zera'],
   points: [finite, 'Punkty muszą być liczbą'],
   date: [isDate, 'Nieprawidłowa data'],

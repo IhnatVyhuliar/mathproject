@@ -86,3 +86,14 @@ test('parseImport accepts a UTF-8 BOM', () => {
   const text = '﻿' + JSON.stringify(demo)
   assert.deepEqual(parseImport(text).data, parseImport(JSON.stringify(demo)).data)
 })
+
+test('cleanData: a color that is not #hex gets a default color, with a warning', () => {
+  const data = structuredClone(demo.data)
+  data.classes[0].color = 'url(http://tracker.example/x.png)'
+  data.categories[0].color = 'red; background: url(http://tracker.example/y.png)'
+  const { data: out, warnings } = parseImport(data)
+  assert.match(out.classes[0].color, /^#[0-9a-f]{6}$/)
+  assert.match(out.categories[0].color, /^#[0-9a-f]{6}$/)
+  assert.equal(out.categories[1].color, demo.data.categories[1].color)
+  assert.deepEqual(warnings, ['Ustawiono domyślny kolor w klasach i kategoriach z niepoprawnym kolorem: 2.'])
+})
