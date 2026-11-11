@@ -8,3 +8,4 @@ arcade-scoreboard-*.json
 *.sqlite-shm
 release/
 .playwright-mcp/
+public/ScoreboardSetup.exe

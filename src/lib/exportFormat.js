@@ -198,6 +198,13 @@ export function exportFileName(when) {
   return `arcade-scoreboard-${day}.json`
 }
 
+// Name of the copy of the old data saved right before an import replaces it (local time).
+export function backupFileName(d) {
+  const p = (n) => String(n).padStart(2, '0')
+  const date = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+  return `przed-importem-${date}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}.json`
+}
+
 export function hasSavedLocalData(storage) {
   try {
     return storage.getItem(STORAGE_KEY) !== null

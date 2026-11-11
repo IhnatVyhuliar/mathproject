@@ -7,7 +7,7 @@ import { readState, isEmpty, importData, tx } from './db.js'
 import * as repo from './repo.js'
 import { validateEntity, validatePatch, validateSettings } from './validate.js'
 import {
-  parseImport, ImportError, buildExport, exportFileName, summarize, formatCounts,
+  parseImport, ImportError, buildExport, exportFileName, backupFileName, summarize, formatCounts,
 } from '../src/lib/exportFormat.js'
 import { MAX_POINTS_PER_WRITE } from '../src/lib/apiMethods.js'
 
@@ -36,12 +36,6 @@ const guardAsync = (fn) => async (...args) => {
   try { return ok(await fn(...args)) } catch (err) { return toResult(err) }
 }
 const check = (msg) => { if (msg) throw new Invalid(msg) }
-
-const pad = (n) => String(n).padStart(2, '0')
-function backupName(d) {
-  const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
-  return `przed-importem-${date}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.json`
-}
 
 const writeJson = (file, obj) => writeFileSync(file, JSON.stringify(obj, null, 2), 'utf8')
 
@@ -125,7 +119,7 @@ export function createHandlers(db, { dialogs, shell, dbPath, backupDir, now = ()
       let backupPath = null
       if (!isEmpty(db)) {
         mkdirSync(backupDir, { recursive: true })
-        backupPath = join(backupDir, backupName(now()))
+        backupPath = join(backupDir, backupFileName(now()))
         writeJson(backupPath, buildExport(readState(db), { source: 'app' }))
       }
       const counts = importData(db, data, { force: true })

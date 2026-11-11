@@ -2,18 +2,43 @@
 
 A gamified class points app for motivating students. The **teacher** awards weighted
 points per category; the **students** watch a Kahoot-style leaderboard on the big screen.
-It is a desktop app (Electron) that works fully offline.
+The same code runs as a **desktop app** (Electron + SQLite, fully offline) and as a **web
+version** (data in the browser's localStorage) at https://math.reachit.space.
 
 ## Dla nauczycielki (Windows)
 
 1. Uruchom `ScoreboardSetup.exe`. Instalator jest niepodpisany, więc SmartScreen pokaże
    „System Windows ochronił ten komputer” → kliknij „Więcej informacji” → „Uruchom mimo to”.
 2. Przy pierwszym starcie kliknij **⬆ Importuj z pliku…** i wskaż plik kopii z wersji
-   przeglądarkowej (tag `v1.1-eksport`, ten sam adres co zwykle, przycisk „Pobierz kopię”).
+   przeglądarkowej (https://math.reachit.space w tej samej przeglądarce co zwykle, przycisk
+   „⬇ Pobierz kopię (.json)”).
    Awaryjnie: w konsoli DevTools starej wersji wpisz
    `copy(localStorage.getItem('arcade-scoreboard@v1'))`, wklej wynik do pliku `.json`
    i zaimportuj go.
 3. Kopię na inny komputer przenosisz przez **⬇ Eksportuj do pliku…** → **⬆ Importuj z pliku…**.
+
+## Wersja webowa (math.reachit.space)
+
+Strona działa jak dawniej: dane są w przeglądarce (`localStorage`, klucz `arcade-scoreboard@v1`,
+ten sam format co stara wersja), więc po aktualizacji wszystko, co nauczycielka miała, jest na
+miejscu — pod warunkiem, że otworzy stronę w tej samej przeglądarce i pod tym samym adresem.
+W panelu „Kopia danych” są przyciski **⬇ Pobierz kopię (.json)**, **⬆ Importuj z pliku…** i —
+jeśli instalator leży na serwerze — **💻 Pobierz aplikację na Windows**. Ranking otwarty
+w drugiej karcie (projektor) odświeża się sam, gdy w innej karcie przybywa punktów.
+
+Wdrożenie na serwerze (nginx serwuje `dist/`):
+
+```bash
+cd ~/ihnat_projects/mathproject
+git checkout feature/electron-sqlite   # raz
+npm run deploy:web -- --exe            # kod + strona + nowy ScoreboardSetup.exe (wymaga Dockera)
+npm run deploy:web                     # kod + strona (instalator z release/ albo public/)
+```
+
+Bez Dockera na serwerze: zbuduj `npm run dist:win` lokalnie i skopiuj
+`release/ScoreboardSetup.exe` do `~/ihnat_projects/mathproject/public/` na serwerze, potem
+`npm run deploy:web`. Plik w `public/` jest w `.gitignore`, a `electron-builder.yml` wyklucza go
+z paczki aplikacji.
 
 ### Gdzie są dane
 
@@ -25,7 +50,7 @@ otwiera ten katalog. Odinstalowanie aplikacji nie usuwa danych.
 
 ```bash
 npm install
-npm run dev            # sam renderer w przeglądarce (http://localhost:5173), bez bazy
+npm run dev            # wersja webowa (http://localhost:5173), dane w localStorage
 npm run app:dev        # aplikacja Electron z hot reloadem
 npm test               # testy (node:test)
 npm run app:smoke      # build + uruchomienie Electrona, zrzut rankingu (SMOKE OK)
@@ -61,7 +86,8 @@ point was for.
 
 Electron 45 shell with a React + Vite renderer (`react-router-dom`, `zustand`). Data is stored
 in SQLite (built-in `node:sqlite`, WAL, foreign keys) in the main process; the renderer talks
-to it over IPC with optimistic updates and undo. Export/import use a versioned JSON format.
+to it over IPC with optimistic updates and undo. Without the Electron bridge (plain browser)
+the same store uses `src/lib/localApi.js`, which implements the same API on localStorage. Export/import use a versioned JSON format.
 Installer: electron-builder (NSIS), built in Docker with Wine. All entities carry
 `crypto.randomUUID()` ids; deleting a class/student/category cascades.
 
@@ -69,12 +95,13 @@ Installer: electron-builder (NSIS), built in Docker with Wine. All entities carr
 
 ```
 electron/           main process: main.js, preload.cjs, db.js (SQLite), repo.js, ipc.js, validate.js
-scripts/            dev.mjs, smoke.mjs, build-win.sh (Docker Windows build)
+scripts/            dev.mjs, smoke.mjs, build-win.sh (Docker Windows build), deploy-web.sh (server)
 test/fixtures/      sample export and old localStorage data
 electron-builder.yml  packaging config
 src/
   store/              useStore.js, createScoreboardStore.js, writeQueue.js
-  lib/                scoring.js, api.js, exportFormat.js, steps.js, apiMethods.js
+  lib/                scoring.js, api.js (Electron bridge), localApi.js + browserFiles.js (web),
+                      exportFormat.js, steps.js, apiMethods.js
   styles/             tokens.css · global.css · app.css
   pages/              Home, ClassLayout, Players, Ranking, Edit
   components/         Modal, ConfirmDialog, AddPointsModal, StudentCard,
