@@ -2,3 +2,9 @@ node_modules
 dist
 *.local
 .DS_Store
+arcade-scoreboard-*.json
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+release/
+.playwright-mcp/

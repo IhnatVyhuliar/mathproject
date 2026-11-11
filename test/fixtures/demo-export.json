@@ -1,0 +1,195 @@
+{
+  "format": "arcade-scoreboard-export",
+  "version": 1,
+  "exportedAt": "2026-11-10T08:00:00.000Z",
+  "source": "browser",
+  "counts": {
+    "classes": 2,
+    "students": 5,
+    "categories": 4,
+    "entries": 9
+  },
+  "data": {
+    "pointStep": 5,
+    "weightStep": 1,
+    "classes": [
+      {
+        "id": "cls-7b",
+        "name": "Klasa 7B",
+        "icon": "🚀",
+        "color": "#ff3d81",
+        "pointStep": 10,
+        "weightStep": null,
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "cls-8a",
+        "name": "Klasa 8A",
+        "icon": "🧠",
+        "color": "#21e6c1",
+        "pointStep": null,
+        "weightStep": null,
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      }
+    ],
+    "students": [
+      {
+        "id": "stu-1",
+        "classId": "cls-7b",
+        "firstName": "Anna",
+        "lastName": "Kowalska",
+        "number": "1",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "stu-2",
+        "classId": "cls-7b",
+        "firstName": "Jakub",
+        "lastName": "Wiśniewski",
+        "number": "2",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "stu-3",
+        "classId": "cls-7b",
+        "firstName": "Lena",
+        "lastName": "Marek",
+        "number": "3",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "stu-4",
+        "classId": "cls-8a",
+        "firstName": "Maja",
+        "lastName": "Zielińska",
+        "number": "1",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "stu-5",
+        "classId": "cls-8a",
+        "firstName": "Tomasz",
+        "lastName": "Nowak",
+        "number": "2",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      }
+    ],
+    "categories": [
+      {
+        "id": "cat-1",
+        "classId": "cls-7b",
+        "name": "Zadanie domowe",
+        "weight": 2,
+        "color": "#21e6c1",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "cat-2",
+        "classId": "cls-7b",
+        "name": "Zaangażowanie",
+        "weight": 1.5,
+        "color": "#ffc53d",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "cat-3",
+        "classId": "cls-8a",
+        "name": "Sprawdzian",
+        "weight": 3,
+        "color": "#7c5cff",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "cat-4",
+        "classId": "cls-8a",
+        "name": "Odpowiedź na lekcji",
+        "weight": 1,
+        "color": "#ff3d81",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      }
+    ],
+    "entries": [
+      {
+        "id": "ent-1",
+        "studentId": "stu-1",
+        "categoryId": "cat-1",
+        "points": 10,
+        "note": "",
+        "date": "2026-10-02",
+        "createdAt": "2026-10-02T09:00:00.000Z"
+      },
+      {
+        "id": "ent-2",
+        "studentId": "stu-1",
+        "categoryId": "cat-2",
+        "points": 5,
+        "note": "Świetna praca ✨",
+        "date": "2026-10-03",
+        "createdAt": "2026-10-03T09:00:00.000Z"
+      },
+      {
+        "id": "ent-3",
+        "studentId": "stu-2",
+        "categoryId": "cat-1",
+        "points": 20,
+        "note": "",
+        "date": "2026-10-03",
+        "createdAt": "2026-10-03T09:00:00.000Z"
+      },
+      {
+        "id": "ent-4",
+        "studentId": "stu-2",
+        "categoryId": "cat-2",
+        "points": 10,
+        "note": "",
+        "date": "2026-10-04",
+        "createdAt": "2026-10-04T09:00:00.000Z"
+      },
+      {
+        "id": "ent-5",
+        "studentId": "stu-3",
+        "categoryId": "cat-1",
+        "points": 5,
+        "note": "",
+        "date": "2026-10-05",
+        "createdAt": "2026-10-05T09:00:00.000Z"
+      },
+      {
+        "id": "ent-6",
+        "studentId": "stu-4",
+        "categoryId": "cat-3",
+        "points": 15,
+        "note": "",
+        "date": "2026-10-06",
+        "createdAt": "2026-10-06T09:00:00.000Z"
+      },
+      {
+        "id": "ent-7",
+        "studentId": "stu-5",
+        "categoryId": "cat-3",
+        "points": 10,
+        "note": "",
+        "date": "2026-10-06",
+        "createdAt": "2026-10-06T09:00:00.000Z"
+      },
+      {
+        "id": "ent-8",
+        "studentId": "stu-5",
+        "categoryId": "cat-4",
+        "points": 5,
+        "note": "",
+        "date": "2026-10-07",
+        "createdAt": "2026-10-07T09:00:00.000Z"
+      },
+      {
+        "id": "ent-9",
+        "studentId": "stu-4",
+        "categoryId": "cat-4",
+        "points": 5,
+        "note": "",
+        "date": "2026-10-08",
+        "createdAt": "2026-10-08T09:00:00.000Z"
+      }
+    ]
+  }
+}

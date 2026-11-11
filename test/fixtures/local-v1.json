@@ -1,0 +1,70 @@
+{
+  "state": {
+    "classes": [
+      {
+        "id": "cls-1",
+        "name": "Klasa 6C",
+        "icon": "⚡",
+        "color": "#ffc53d",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      }
+    ],
+    "students": [
+      {
+        "id": "s-1",
+        "classId": "cls-1",
+        "firstName": "Ola",
+        "lastName": "Lis",
+        "number": "1",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "s-2",
+        "classId": "cls-1",
+        "firstName": "Piotr",
+        "lastName": "Sowa",
+        "number": "2",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      },
+      {
+        "id": "s-2",
+        "classId": "cls-1",
+        "firstName": "Piotr",
+        "lastName": "Sowa-Duplikat",
+        "number": "3",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      }
+    ],
+    "categories": [
+      {
+        "id": "c-1",
+        "classId": "cls-1",
+        "name": "Zadanie",
+        "weight": 1,
+        "color": "#21e6c1",
+        "createdAt": "2026-10-01T08:00:00.000Z"
+      }
+    ],
+    "entries": [
+      {
+        "id": "e-1",
+        "studentId": "s-1",
+        "categoryId": "c-1",
+        "points": 5,
+        "note": "",
+        "date": "2026-10-02",
+        "createdAt": "2026-10-02T09:00:00.000Z"
+      },
+      {
+        "id": "e-2",
+        "studentId": "s-2",
+        "categoryId": "c-gone",
+        "points": 5,
+        "note": "",
+        "date": "2026-10-03",
+        "createdAt": "2026-10-03T09:00:00.000Z"
+      }
+    ]
+  },
+  "version": 1
+}

@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { leaderboard } from '../lib/scoring.js'
 import { plural } from '../lib/steps.js'
 import EmptyState from '../components/EmptyState.jsx'
+import BackupPanel from '../components/BackupPanel.jsx'
 import ConfirmDialog from '../components/ConfirmDialog.jsx'
 
 export default function HomePage() {
@@ -56,7 +57,7 @@ export default function HomePage() {
       </header>
 
       {classes.length === 0 ? (
-        <EmptyState icon="🎓" title="Nie ma jeszcze klas" hint="Dodaj pierwszą klasę powyżej, żeby zacząć." />
+        <EmptyState icon="🎓" title="Nie ma jeszcze klas" hint="Dodaj pierwszą klasę powyżej, żeby zacząć. Masz już zapisane dane? Wczytasz je przyciskiem „Importuj z pliku…” poniżej." />
       ) : (
         <ul className="class-grid">
           {classes.map((cls) => {
@@ -152,6 +153,8 @@ export default function HomePage() {
           })}
         </ul>
       )}
+
+      <BackupPanel />
 
       {toDelete && (
         <ConfirmDialog
