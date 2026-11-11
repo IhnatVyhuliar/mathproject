@@ -12,7 +12,9 @@ ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm ci
 if [ "${1:-}" = "--exe" ]; then
   npm run dist:win
 fi
-if [ -f release/ScoreboardSetup.exe ]; then
+# release/ wins only right after --exe; otherwise a file uploaded to public/ by hand
+# is newer than an old release/ build and must stay.
+if [ -f release/ScoreboardSetup.exe ] && { [ "${1:-}" = "--exe" ] || [ ! -f public/ScoreboardSetup.exe ]; }; then
   mkdir -p public
   cp release/ScoreboardSetup.exe public/
 fi

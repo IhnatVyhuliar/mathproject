@@ -10,7 +10,7 @@ const bridge = createBridgeApi()
 export const backend = bridge ? 'app' : 'browser'
 
 export const useStore = createScoreboardStore({
-  api: bridge ?? createLocalApi({ storage: browserStorage(), files: browserFiles }),
+  api: bridge ?? createLocalApi({ storage: browserStorage(), files: browserFiles, locks: globalThis.navigator?.locks }),
 })
 
 if (!bridge) {

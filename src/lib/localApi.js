@@ -39,13 +39,32 @@ const notFound = () => new ApiError('Nie znaleziono rekordu')
 const has = (list, id) => list.some((x) => x.id === id)
 const pick = (obj, fields) => Object.keys(obj ?? {}).filter((k) => fields.includes(k))
 
-export function createLocalApi({ storage, files, now = () => new Date() }) {
+// Web Locks name shared by every tab of the site.
+const LOCK_NAME = 'arcade-scoreboard-write'
+
+// `locks` is navigator.locks (absent outside secure contexts → no lock).
+export function createLocalApi({ storage, files, locks = null, now = () => new Date() }) {
+  // Each tab keeps its own copy of localStorage that other tabs' writes reach
+  // asynchronously, so two tabs could read the same save and overwrite each
+  // other. The lock makes writes take turns across tabs; it shrinks that window
+  // a lot but cannot prove the copy is fresh. Here all writes come from clicks
+  // in the tab being used, so they are never milliseconds apart anyway.
+  const exclusive = (fn) => (locks ? locks.request(LOCK_NAME, () => fn()) : fn())
+
   // Throws instead of returning empty data when the save is unreadable, so a
   // later write can never overwrite it.
   const read = () => {
     if (!storage) throw new ApiError(NO_STORAGE)
+    // readBrowserData treats a failing getItem as "nothing saved"; here that
+    // would show an empty database (and let a write replace the real one).
+    let text
     try {
-      return readBrowserData(storage) ?? normalizeData({})
+      text = storage.getItem(STORAGE_KEY)
+    } catch {
+      throw new ApiError(NO_STORAGE)
+    }
+    try {
+      return readBrowserData({ getItem: () => text }) ?? normalizeData({})
     } catch (err) {
       if (err instanceof ImportError) throw new ApiError(`Nie udało się odczytać danych z przeglądarki: ${err.message}`)
       throw err
@@ -58,13 +77,14 @@ export function createLocalApi({ storage, files, now = () => new Date() }) {
       throw new ApiError(WRITE_FAILED)
     }
   }
-  // Read, change, save — all synchronous, so another tab can't interleave.
-  const change = (fn) => {
-    const data = read()
-    fn(data)
-    write(data)
-    return null
-  }
+  // Read, change, save — one turn under the lock.
+  const change = (fn) =>
+    exclusive(() => {
+      const data = read()
+      fn(data)
+      write(data)
+      return null
+    })
 
   const create = (key, parentOk = () => true) => (entity) =>
     change((d) => {
@@ -160,15 +180,18 @@ export function createLocalApi({ storage, files, now = () => new Date() }) {
       ].join('\n')
       if (!files.confirm(`Zaimportować dane z pliku?\n\n${detail}`)) return { canceled: true }
 
-      // Another tab may have saved while the dialog was open; decide again.
-      const latest = read()
-      let backupPath = null
-      if (latest.classes.length) {
-        backupPath = backupFileName(now())
-        files.download(backupPath, buildExport(latest, { source: 'browser' }))
-      }
-      write(data)
-      return { counts: summarize(data), warnings, backupPath }
+      // Another tab may have saved while the dialog was open; decide again,
+      // under the lock (the dialog itself must not hold it).
+      return exclusive(() => {
+        const latest = read()
+        let backupPath = null
+        if (latest.classes.length) {
+          backupPath = backupFileName(now())
+          files.download(backupPath, buildExport(latest, { source: 'browser' }))
+        }
+        write(data)
+        return { counts: summarize(data), warnings, backupPath }
+      })
     },
 
     revealDatabase: () => {

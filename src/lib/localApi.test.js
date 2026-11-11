@@ -214,3 +214,61 @@ test('store on the local api: awarded points survive a fresh store (reload)', as
   assert.equal(second.getState().sync.status, 'ready')
   assert.equal(second.getState().entries.length, s.entries.length + 1)
 })
+
+test('getItem throwing → error, not an empty database; nothing gets written', async () => {
+  let writes = 0
+  const storage = { getItem: () => { throw new Error('SecurityError') }, setItem: () => { writes++ } }
+  const api = createLocalApi({ storage, files: fakeFiles() })
+  await assert.rejects(api.getState(), (e) => e instanceof ApiError && /przeglądarka/i.test(e.message))
+  await assert.rejects(api.createClass({ id: 'c1', name: 'A' }), ApiError)
+  await assert.rejects(api.exportToFile(), ApiError)
+  assert.equal(writes, 0)
+})
+
+// Fake Web Locks: records whether each storage write happens while the lock is held.
+function fakeLocks() {
+  const locks = {
+    held: false,
+    names: [],
+    async request(name, cb) {
+      locks.names.push(name)
+      assert.equal(locks.held, false, 'lock requested while already held')
+      locks.held = true
+      try {
+        return await cb()
+      } finally {
+        locks.held = false
+      }
+    },
+  }
+  return locks
+}
+
+test('every write happens inside the cross-tab lock; the import dialog does not hold it', async () => {
+  const locks = fakeLocks()
+  const storage = memoryStorage({ [STORAGE_KEY]: JSON.stringify({ state: demo.data, version: 2 }) })
+  const writesOutsideLock = []
+  const setItem = storage.setItem
+  storage.setItem = (k, v) => {
+    if (!locks.held) writesOutsideLock.push(k)
+    setItem(k, v)
+  }
+  const files = fakeFiles({ text: oldBlob })
+  const confirm = files.confirm
+  let confirmUnderLock = null
+  files.confirm = (msg) => ((confirmUnderLock = locks.held), confirm(msg))
+  const api = createLocalApi({ storage, files, locks })
+
+  await api.putSettings({ pointStep: 10 })
+  await api.createClass({ id: 'c-x', name: 'X', icon: '', color: '#fff', pointStep: null, weightStep: null, createdAt: '' })
+  await api.patchClass('c-x', { name: 'Y' })
+  await api.deleteClass('c-x')
+  const e = { id: 'p-x', studentId: demo.data.students[0].id, categoryId: demo.data.categories[0].id, points: 5, note: '', date: '2026-11-11', createdAt: '' }
+  await api.createPoints([e])
+  await api.importFromFile()
+
+  assert.deepEqual(writesOutsideLock, [])
+  assert.equal(confirmUnderLock, false)
+  assert.ok(locks.names.length >= 6)
+  assert.ok(locks.names.every((n) => n === locks.names[0]))
+})
