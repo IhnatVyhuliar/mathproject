@@ -200,3 +200,11 @@ test('registerIpc rejects unknown methods and untrusted senders', async () => {
   assert.deepEqual(await handler({ trusted: false }, 'getState'), bad)
   assert.deepEqual(await handler({ trusted: true }, 'getState'), { ok: true, value: demo.data })
 })
+
+test('create/patch with a color that is not #hex → Nieprawidłowy kolor', () => {
+  const bad = 'url(http://tracker.example/x.png)'
+  assert.deepEqual(h.createClass(newClass({ id: 'c-bad', color: bad })), { ok: false, error: 'Nieprawidłowy kolor' })
+  const cat = demo.data.categories[0].id
+  assert.deepEqual(h.patchCategory(cat, { color: bad }), { ok: false, error: 'Nieprawidłowy kolor' })
+  assert.equal(h.patchCategory(cat, { color: '#21e6c1' }).ok, true)
+})

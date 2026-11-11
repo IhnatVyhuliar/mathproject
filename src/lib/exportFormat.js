@@ -14,6 +14,11 @@ export class ImportError extends Error {
   }
 }
 
+// Colors go straight into inline styles, so only plain #rgb / #rrggbb is allowed;
+// anything else (e.g. url(...)) would make the page load from another server.
+export const isHexColor = (v) => typeof v === 'string' && /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)
+const DEFAULT_COLOR = '#7c5cff'
+
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
 const objects = (v) => (Array.isArray(v) ? v.filter(isObj) : [])
 const str = (v) => (v == null ? '' : v)
@@ -120,8 +125,18 @@ export function cleanData(data) {
   })
   warn(fixedWeights, 'Ustawiono wagę 1 w kategoriach z niepoprawną wagą')
 
+  let fixedColors = 0
+  const withColor = (item) => {
+    if (isHexColor(item.color)) return item
+    fixedColors++
+    return { ...item, color: DEFAULT_COLOR }
+  }
+  const classes = part.classes.map(withColor)
+  const safeCategories = fixedCategories.map(withColor)
+  warn(fixedColors, 'Ustawiono domyślny kolor w klasach i kategoriach z niepoprawnym kolorem')
+
   return {
-    data: { ...data, classes: part.classes, students, categories: fixedCategories, entries },
+    data: { ...data, classes, students, categories: safeCategories, entries },
     warnings,
   }
 }
@@ -196,6 +211,13 @@ export function exportFileName(when) {
     day = `${when.getFullYear()}-${p(when.getMonth() + 1)}-${p(when.getDate())}`
   }
   return `arcade-scoreboard-${day}.json`
+}
+
+// Name of the copy of the old data saved right before an import replaces it (local time).
+export function backupFileName(d) {
+  const p = (n) => String(n).padStart(2, '0')
+  const date = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+  return `przed-importem-${date}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}.json`
 }
 
 export function hasSavedLocalData(storage) {

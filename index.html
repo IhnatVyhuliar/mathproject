@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Arcade Scoreboard — punkty klasowe</title>
     <meta name="description" content="Tablica wyników do motywowania uczniów punktami z wagami." />
+    <script>
+      // Old web links (/class/<id>/ranking) → hash routes (/#/class/<id>/ranking).
+      // The target starts with our own origin, so a path like //other.site/class/…
+      // can never send the visitor to another site.
+      ;(function () {
+        var l = window.location
+        var i = l.pathname.indexOf('/class/')
+        if (/^https?:$/.test(l.protocol) && i >= 0) {
+          l.replace(l.origin + '/#' + l.pathname.slice(i) + l.search)
+        }
+      })()
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

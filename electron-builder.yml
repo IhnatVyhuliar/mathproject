@@ -4,6 +4,7 @@ directories: { output: release }
 files:
   - package.json
   - dist/**
+  - "!dist/ScoreboardSetup.exe"
   - electron/**
   - "!electron/**/*.test.js"
   - src/lib/exportFormat.js

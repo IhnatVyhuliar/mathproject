@@ -16,7 +16,7 @@ docker run --rm \
   electronuserland/builder:22-wine bash -c '
     set -euo pipefail
     mkdir -p /work
-    tar -C /src --exclude=node_modules --exclude=dist --exclude=release -cf - . | tar -C /work -xf -
+    tar -C /src --exclude=node_modules --exclude=dist --exclude=release --exclude=public/ScoreboardSetup.exe -cf - . | tar -C /work -xf -
     cd /work
     npm ci && npm run build && npx electron-builder --win nsis
     cp release/ScoreboardSetup.exe /out/
